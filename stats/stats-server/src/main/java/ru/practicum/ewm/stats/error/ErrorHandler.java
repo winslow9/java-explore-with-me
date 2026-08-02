@@ -1,5 +1,6 @@
 package ru.practicum.ewm.stats.error;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -14,6 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Slf4j
 @RestControllerAdvice
 public class ErrorHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -22,6 +24,7 @@ public class ErrorHandler {
         List<String> errors = exception.getBindingResult().getFieldErrors().stream()
                 .map(this::formatFieldError)
                 .toList();
+        log.warn("Validation failed: {}", errors);
         return buildResponse(HttpStatus.BAD_REQUEST, "Validation failed", errors);
     }
 
@@ -31,6 +34,7 @@ public class ErrorHandler {
     })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleBadRequest(Exception exception) {
+        log.warn("Bad request: {}", exception.getMessage());
         return buildResponse(HttpStatus.BAD_REQUEST, exception.getMessage(), List.of(exception.getMessage()));
     }
 
@@ -38,6 +42,7 @@ public class ErrorHandler {
     public ResponseEntity<ErrorResponse> handleResponseStatus(ResponseStatusException exception) {
         HttpStatus status = HttpStatus.valueOf(exception.getStatusCode().value());
         String message = exception.getReason() == null ? exception.getMessage() : exception.getReason();
+        log.warn("Response status exception: {} - {}", status, message);
         return ResponseEntity
                 .status(status)
                 .body(buildResponse(status, message, List.of(message)));
