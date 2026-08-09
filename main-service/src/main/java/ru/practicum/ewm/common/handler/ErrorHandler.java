@@ -34,7 +34,7 @@ public class ErrorHandler {
                 .build();
     }
 
-    @ExceptionHandler(Throwable.class)
+    @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleThrowable(final Throwable e) {
         log.warn("500 INTERNAL_SERVER_ERROR: ", e);

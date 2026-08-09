@@ -27,10 +27,10 @@ public class PublicController {
 
     @GetMapping
     public ResponseEntity<List<CompilationDtoResponse>> get(
-            @RequestParam(name = PARAM_PINNED, required = false) Boolean pinned,
-            @RequestParam(name = PARAM_FROM, required = false, defaultValue = "0")
+            @RequestParam(name = PARAM_PINNED) Boolean pinned,
+            @RequestParam(name = PARAM_FROM, defaultValue = "0")
             @PositiveOrZero Integer from,
-            @RequestParam(name = PARAM_SIZE, required = false, defaultValue = "10")
+            @RequestParam(name = PARAM_SIZE, defaultValue = "10")
             @Positive Integer size
     ) {
 
